@@ -1,7 +1,16 @@
-import requests
+
+try:
+    import requests
+except:
+    print("requests is not installed try running 'pip install requests'")
+
+import sys
 import csv
 
-username = input("Enter a username:")
+if len(sys.argv) > 1:
+   username = sys.argv[1]
+else:
+   username = input("Enter a username:")
 username = username.replace(' ','%20')
 uri = 'https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=' + username
 response = requests.get(uri)
@@ -40,12 +49,13 @@ def parseresponse(response):
 def gettotalbosskc(user):
     total = 0
     for boss in user['Bosses'].keys():
-        if (user['Bosses'][boss]['name'] == 'Chambers of Xeric: Challenge Mode' or user['Bosses'][boss]['name'] == 'Theatre of Blood'):
-            total = total + (user['Bosses'][boss]['kc'] * 4)
-        elif (user['Bosses'][boss]['name'] == 'Chambers of Xeric'):
-            total = total + (user['Bosses'][boss]['kc'] * 2)
-        else:
-             total = total + user['Bosses'][boss]['kc']
+        if (user['Bosses'][boss]['kc'] > 0):
+            if (user['Bosses'][boss]['name'] == 'Chambers of Xeric: Challenge Mode' or user['Bosses'][boss]['name'] == 'Theatre of Blood'):
+                total = total + (user['Bosses'][boss]['kc'] * 4)
+            elif (user['Bosses'][boss]['name'] == 'Chambers of Xeric'):
+                total = total + (user['Bosses'][boss]['kc'] * 2)
+            else:
+                 total = total + user['Bosses'][boss]['kc']
 
     return total
 
